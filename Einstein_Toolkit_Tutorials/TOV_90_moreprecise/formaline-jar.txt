@@ -1,0 +1,1002 @@
+jobid="run-TOV_90moreprecise-libaas504-p028.laboratori.local-o.rossi-2023.07.10-13.47.05-43283"
+jobtype="default"
+app_title=""
+start_time="Jul 10 2023 15:47:05+0200"
+project_name=""
+output_files="TOV_90_moreprecise"
+host="libaas504-p028.laboratori.local"
+nprocs=1
+portal_username=""
+local_username="o.rossi"
+parameter_filename="TOV_90moreprecise.par"
+executable="./cactus_sim"
+data_directory="TOV_90_moreprecise"
+app_visibility="public"
+notification_reports=""
+notification_methods=""
+Cactus_version="4.9.0"
+config_id="config-sim-ubntlts2004-azr.laboratori.local-home-studente-et-Cactus"
+build_id="build-sim-ubntlts2004-azr.laboratori.local-studente-2021.03.14-22.06.53-121802"
+compile_date="Mar 14 2021"
+compile_time="23:06:55"
+simulation_id="run-TOV_90moreprecise-libaas504-p028.laboratori.local-o.rossi-2023.07.10-13.47.05-43283"
+run_id="run-TOV_90moreprecise-libaas504-p028.laboratori.local-o.rossi-2023.07.10-13.47.05-43283"
+run_user="o.rossi"
+run_date="Jul 10 2023"
+run_time="15:47:05+0200"
+run_host="libaas504-p028.laboratori.local"
+run_title=""
+argc=2
+argv[0]="./cactus_sim"
+argv[1]="TOV_90moreprecise.par"
+parameter_filename="TOV_90moreprecise.par"
+parameter_file="# Parameter file from https://github.com/nds-org/jupyter-et/blob/master/CactusTutorial.ipynb
+#
+# Example parameter file for a static TOV star. Everything is evolved, but
+# because this is a solution to the GR and hydro equations, nothing changes
+# much. What can be seen is the initial perturbation (due to numerical errors)
+# ringing down (look at the density maximum), and later numerical errors
+# governing the solution. Try higher resolutions to decrease this error.
+
+# Some basic stuff
+ActiveThorns \= \"Time MoL\"
+ActiveThorns \= \"Coordbase CartGrid3d Boundary StaticConformal\"
+ActiveThorns \= \"SymBase ADMBase TmunuBase HydroBase InitBase ADMCoupling ADMMacros\"
+ActiveThorns \= \"IOUtil\"
+ActiveThorns \= \"Formaline\"
+ActiveThorns \= \"SpaceMask CoordGauge Constants LocalReduce aeilocalinterp LoopControl\"
+ActiveThorns \= \"Carpet CarpetLib CarpetReduce CarpetRegrid2 CarpetInterp\"
+ActiveThorns \= \"CarpetIOASCII CarpetIOScalar CarpetIOHDF5 CarpetIOBasic\"
+
+# Finalize
+Cactus::terminate           \= \"time\"
+Cactus::cctk_final_time     \= 400 # divide by ~203 to get ms
+
+# Termination Trigger
+ActiveThorns \= \"TerminationTrigger\"
+TerminationTrigger::max_walltime \= 24          # hours
+TerminationTrigger::on_remaining_walltime \= 0  # minutes
+TerminationTrigger::check_file_every \= 512
+TerminationTrigger::termination_file \= \"TerminationTrigger.txt\"
+TerminationTrigger::termination_from_file   \= \"yes\"
+TerminationTrigger::create_termination_file \= \"yes\"
+
+# grid parameters
+Carpet::domain_from_coordbase \= \"yes\"
+CartGrid3D::type         \= \"coordbase\"
+CartGrid3D::domain       \= \"full\"
+CartGrid3D::avoid_origin \= \"no\"
+CoordBase::xmin \=  0.0
+CoordBase::ymin \=  0.0
+CoordBase::zmin \=  0.0
+CoordBase::xmax \= 24.0
+CoordBase::ymax \= 24.0
+CoordBase::zmax \= 24.0
+# Change these parameters to change resolution. The ?max settings above
+# have to be multiples of these. 'dx' is the size of one cell in x-direction.
+# Making this smaller means using higher resolution, because more points will
+# be used to cover the same space.
+CoordBase::dx   \=   1.5
+CoordBase::dy   \=   1.5
+CoordBase::dz   \=   1.5
+
+CarpetRegrid2::regrid_every \=   0
+CarpetRegrid2::num_centres  \=   1
+CarpetRegrid2::num_levels_1 \=   2
+CarpetRegrid2::radius_1[1]  \= 12.0
+
+
+CoordBase::boundary_size_x_lower        \= 3
+CoordBase::boundary_size_y_lower        \= 3
+CoordBase::boundary_size_z_lower        \= 3
+CoordBase::boundary_size_x_upper        \= 3
+CoordBase::boundary_size_y_upper        \= 3
+CoordBase::boundary_size_z_upper        \= 3
+CoordBase::boundary_shiftout_x_lower    \= 1
+CoordBase::boundary_shiftout_y_lower    \= 1
+CoordBase::boundary_shiftout_z_lower    \= 1
+CoordBase::boundary_shiftout_x_upper    \= 0
+CoordBase::boundary_shiftout_y_upper    \= 0
+CoordBase::boundary_shiftout_z_upper    \= 0
+
+
+ActiveThorns \= \"ReflectionSymmetry\"
+
+ReflectionSymmetry::reflection_x \= \"yes\"
+ReflectionSymmetry::reflection_y \= \"yes\"
+ReflectionSymmetry::reflection_z \= \"yes\"
+ReflectionSymmetry::avoid_origin_x \= \"no\"
+ReflectionSymmetry::avoid_origin_y \= \"no\"
+ReflectionSymmetry::avoid_origin_z \= \"no\"
+
+# storage and coupling
+TmunuBase::stress_energy_storage \= yes
+TmunuBase::stress_energy_at_RHS  \= yes
+TmunuBase::timelevels            \=  1
+TmunuBase::prolongation_type     \= none
+
+
+HydroBase::timelevels            \= 3
+
+ADMMacros::spatial_order \= 4
+
+SpaceMask::use_mask      \= \"yes\"
+
+Carpet::enable_all_storage       \= no
+Carpet::use_buffer_zones         \= \"yes\"
+
+Carpet::poison_new_timelevels    \= \"yes\"
+Carpet::check_for_poison         \= \"no\"
+
+Carpet::init_3_timelevels        \= no
+Carpet::init_fill_timelevels     \= \"yes\"
+
+CarpetLib::poison_new_memory \= \"yes\"
+CarpetLib::poison_value      \= 114
+
+# system specific Carpet paramters
+Carpet::max_refinement_levels    \= 10
+driver::ghost_size               \= 3
+Carpet::prolongation_order_space \= 3
+Carpet::prolongation_order_time  \= 2
+
+# Time integration
+time::dtfac \= 0.25
+
+MoL::ODE_Method             \= \"rk4\"
+MoL::MoL_Intermediate_Steps \= 4
+MoL::MoL_Num_Scratch_Levels \= 1
+
+# check all physical variables for NaNs
+#  This can save you computing time, so it's not a bad idea to do this
+#  once in a whioe.
+ActiveThorns \= \"NaNChecker\"
+NaNChecker::check_every \= 16384
+NaNChecker::action_if_found \= \"terminate\" #\"terminate\", \"just warn\", \"abort\"
+NaNChecker::check_vars \= \"ADMBase::metric ADMBase::lapse ADMBase::shift HydroBase::rho HydroBase::eps HydroBase::press HydroBase::vel\"
+
+# Hydro paramters
+
+ActiveThorns \= \"EOS_Omni GRHydro\"
+
+HydroBase::evolution_method      \= \"GRHydro\"
+
+GRHydro::riemann_solver         \= \"Marquina\"
+GRHydro::GRHydro_eos_type       \= \"Polytype\"
+GRHydro::GRHydro_eos_table      \= \"2D_Polytrope\"
+GRHydro::recon_method           \= \"ppm\"
+GRHydro::GRHydro_stencil        \= 3
+GRHydro::bound                  \= \"none\"
+GRHydro::rho_abs_min            \= 1.e-10
+# Parameter controlling finite difference order of the Christoffel symbols in GRHydro
+GRHydro::sources_spatial_order  \= 4
+
+# Curvature evolution parameters
+
+ActiveThorns \= \"GenericFD NewRad\"
+ActiveThorns \= \"ML_BSSN ML_BSSN_Helper\"
+ADMBase::evolution_method        \= \"ML_BSSN\"
+ADMBase::lapse_evolution_method  \= \"ML_BSSN\"
+ADMBase::shift_evolution_method  \= \"ML_BSSN\"
+ADMBase::dtlapse_evolution_method\= \"ML_BSSN\"
+ADMBase::dtshift_evolution_method\= \"ML_BSSN\"
+
+ML_BSSN::timelevels \= 3
+
+ML_BSSN::harmonicN           \= 1      # 1+log
+ML_BSSN::harmonicF           \= 2.0    # 1+log
+ML_BSSN::evolveA             \= 1
+ML_BSSN::evolveB            \= 1
+ML_BSSN::ShiftGammaCoeff     \= 0.75
+ML_BSSN::BetaDriver          \= 2.66
+ML_BSSN::advectLapse 	     \= 0.0
+ML_BSSN::advectShift 	     \= 0.0
+
+
+ML_BSSN::my_initial_boundary_condition \= \"extrapolate-gammas\"
+ML_BSSN::my_rhs_boundary_condition     \= \"NewRad\"
+
+# Some dissipation to get rid of high-frequency noise
+ActiveThorns \= \"SphericalSurface Dissipation\"
+Dissipation::verbose   \= \"no\"
+Dissipation::epsdis   \= 0.01
+Dissipation::vars \= \"
+        ML_BSSN::ML_log_confac
+        ML_BSSN::ML_metric
+        ML_BSSN::ML_curv
+        ML_BSSN::ML_trace_curv
+        ML_BSSN::ML_Gamma
+        ML_BSSN::ML_lapse
+        ML_BSSN::ML_shift
+\"
+
+
+# init parameters
+InitBase::initial_data_setup_method \= \"init_some_levels\"
+
+# Use TOV as initial data
+ActiveThorns \= \"TOVSolver\"
+
+HydroBase::initial_hydro         \= \"tov\"
+ADMBase::initial_data            \= \"tov\"
+ADMBase::initial_lapse           \= \"tov\"
+ADMBase::initial_shift           \= \"tov\"
+ADMBase::initial_dtlapse         \= \"zero\"
+ADMBase::initial_dtshift         \= \"zero\"
+
+# Parameters for initial star
+TOVSolver::TOV_Rho_Central[0] \= 1.28e-3
+TOVSolver::TOV_Gamma          \= 2
+TOVSolver::TOV_K              \= 100
+
+# Set equation of state for evolution
+EOS_Omni::poly_gamma                   \= 2
+EOS_Omni::poly_k                       \= 90
+EOS_Omni::gl_gamma                     \= 2
+EOS_Omni::gl_k                         \= 100
+
+
+# I/O
+
+# Use (create if necessary) an output directory named like the
+# parameter file (minus the .par)
+IO::out_dir \= TOV_90_moreprecise
+
+# Write one file overall per output (variable/group)
+# In production runs, comment this or set to \"proc\" to get one file
+# per MPI process
+IO::out_mode            \= \"onefile\"
+
+# Some screen output
+IOBasic::outInfo_every \= 512
+IOBasic::outInfo_vars  \= \"Carpet::physical_time_per_hour HydroBase::rho{reductions\='maximum'}\"
+
+# Scalar output
+IOScalar::outScalar_every    \= 512
+IOScalar::one_file_per_group \= \"yes\"
+IOScalar::outScalar_reductions \= \"norm1 norm2 norm_inf sum maximum minimum\"
+IOScalar::outScalar_vars     \= \"
+ HydroBase::rho{reductions\='maximum'}
+ HydroBase::press{reductions\='maximum'}
+ HydroBase::eps{reductions\='minimum maximum'}
+ HydroBase::vel{reductions\='minimum maximum'}
+ HydroBase::w_lorentz{reductions\='minimum maximum'}
+ ADMBase::lapse{reductions\='minimum maximum'}
+ ADMBase::shift{reductions\='minimum maximum'}
+ ML_BSSN::ML_Ham{reductions\='norm1 norm2 maximum minimum norm_inf'}
+ ML_BSSN::ML_mom{reductions\='norm1 norm2 maximum minimum norm_inf'}
+ GRHydro::dens{reductions\='minimum maximum sum'}
+ Carpet::timing{reductions\='average'}
+\"
+
+# 1D ASCII output. Disable for production runs!
+IOASCII::out1D_every        \= -1
+IOASCII::one_file_per_group \= yes
+IOASCII::output_symmetry_points \= no
+IOASCII::out1D_vars         \= \"
+ HydroBase::rho
+ HydroBase::press
+ HydroBase::eps
+ HydroBase::vel
+ ADMBase::lapse
+ ADMBase::metric
+ ADMBase::curv
+ ML_BSSN::ML_Ham
+ ML_BSSN::ML_mom
+\"
+
+# 2D HDF5 output
+CarpetIOHDF5::output_buffer_points \= \"no\"
+
+CarpetIOHDF5::out2D_every \= 2048
+CarpetIOHDF5::out2D_vars \= \"
+ HydroBase::rho
+ HydroBase::eps
+ HydroBase::vel
+ HydroBase::w_lorentz
+ ADMBase::lapse
+ ADMBase::shift
+ ADMBase::metric
+ ML_BSSN::ML_Ham
+ ML_BSSN::ML_mom
+ \"
+"
+current_dir="/home/LABORATORI/o.rossi/Desktop/ETK"
+out_dir="TOV_90_moreprecise"
+thorns/ADMAnalysis="inactive"
+thorns/ADMBase="active"
+thorns/ADMCoupling="active"
+thorns/ADMDerivatives="inactive"
+thorns/ADMMacros="active"
+thorns/ADMMass="inactive"
+thorns/AEILocalInterp="active"
+thorns/AHFinder="inactive"
+thorns/AHFinderDirect="inactive"
+thorns/Baikal="inactive"
+thorns/BaikalVacuum="inactive"
+thorns/BLAS="inactive"
+thorns/Boundary="active"
+thorns/Cactus="active"
+thorns/CalcK="inactive"
+thorns/Carpet="active"
+thorns/CarpetEvolutionMask="inactive"
+thorns/CarpetIntegrateTest="inactive"
+thorns/CarpetInterp="active"
+thorns/CarpetInterp2="inactive"
+thorns/CarpetIOASCII="active"
+thorns/CarpetIOBasic="active"
+thorns/CarpetIOHDF5="active"
+thorns/CarpetIOScalar="active"
+thorns/CarpetLib="active"
+thorns/CarpetMask="inactive"
+thorns/CarpetProlongateTest="inactive"
+thorns/CarpetReduce="active"
+thorns/CarpetRegrid="inactive"
+thorns/CarpetRegrid2="active"
+thorns/CarpetRegridTest="inactive"
+thorns/CarpetSlab="inactive"
+thorns/CarpetTracker="inactive"
+thorns/CartGrid3D="active"
+thorns/Cartoon2D="inactive"
+thorns/Constants="active"
+thorns/Convert_to_HydroBase="inactive"
+thorns/CoordBase="active"
+thorns/CoordGauge="active"
+thorns/Coordinates="inactive"
+thorns/CoordinatesSymmetry="inactive"
+thorns/CT_Analytic="inactive"
+thorns/CT_MultiLevel="inactive"
+thorns/CycleClock="active"
+thorns/DemoInterp="inactive"
+thorns/Dissipation="active"
+thorns/DistortedBHIVP="inactive"
+thorns/EHFinder="inactive"
+thorns/EinsteinExact_Test="inactive"
+thorns/EllBase="inactive"
+thorns/EllSOR="inactive"
+thorns/EOS_Base="active"
+thorns/EOS_Hybrid="inactive"
+thorns/EOS_IdealFluid="inactive"
+thorns/EOS_Omni="active"
+thorns/EOS_Polytrope="active"
+thorns/Exact="inactive"
+thorns/Extract="inactive"
+thorns/FFTW3="inactive"
+thorns/FishboneMoncriefID="inactive"
+thorns/FleshInfo="inactive"
+thorns/Formaline="active"
+thorns/Fortran="inactive"
+thorns/GaugeWave="inactive"
+thorns/GenericFD="active"
+thorns/GiRaFFE="inactive"
+thorns/GiRaFFE_to_HydroBase="inactive"
+thorns/GiRaFFEfood="inactive"
+thorns/GlobalDerivative="inactive"
+thorns/GRHydro="active"
+thorns/GRHydro_InitData="inactive"
+thorns/GSL="inactive"
+thorns/HDF5="active"
+thorns/HelloWorld="inactive"
+thorns/HighOrderWaveTest="inactive"
+thorns/HTTPD="inactive"
+thorns/HTTPDExtra="inactive"
+thorns/hwloc="active"
+thorns/Hydro_Analysis="inactive"
+thorns/Hydro_InitExcision="inactive"
+thorns/Hydro_RNSID="inactive"
+thorns/HydroBase="active"
+thorns/ID_converter_GiRaFFE="inactive"
+thorns/ID_converter_ILGRMHD="inactive"
+thorns/IDAnalyticBH="inactive"
+thorns/IDAxiBrillBH="inactive"
+thorns/IDAxiOddBrillBH="inactive"
+thorns/IDBrillData="inactive"
+thorns/IDConstraintViolate="inactive"
+thorns/IDFileADM="inactive"
+thorns/IDLinearWaves="inactive"
+thorns/IDScalarWave="inactive"
+thorns/IDScalarWaveC="inactive"
+thorns/IDScalarWaveCXX="inactive"
+thorns/IDScalarWaveElliptic="inactive"
+thorns/IDWaveMoL="inactive"
+thorns/IllinoisGRMHD="inactive"
+thorns/InitBase="active"
+thorns/Interpolate2="inactive"
+thorns/InterpToArray="inactive"
+thorns/IOASCII="inactive"
+thorns/IOBasic="inactive"
+thorns/IOHDF5="inactive"
+thorns/IOHDF5Util="inactive"
+thorns/IOJpeg="inactive"
+thorns/IOUtil="active"
+thorns/KerrSchild="inactive"
+thorns/LAPACK="inactive"
+thorns/LeanBSSNMoL="inactive"
+thorns/libjpeg="inactive"
+thorns/LlamaWaveToy="inactive"
+thorns/LocalInterp="inactive"
+thorns/LocalInterp2="inactive"
+thorns/LocalReduce="active"
+thorns/LoopControl="active"
+thorns/LORENE="inactive"
+thorns/MemSpeed="inactive"
+thorns/Meudon_Bin_BH="inactive"
+thorns/Meudon_Bin_NS="inactive"
+thorns/Meudon_Mag_NS="inactive"
+thorns/Minkowski="inactive"
+thorns/ML_ADMConstraints="inactive"
+thorns/ML_ADMQuantities="inactive"
+thorns/ML_BSSN="active"
+thorns/ML_BSSN_Helper="active"
+thorns/ML_BSSN_Test="inactive"
+thorns/ML_CCZ4="inactive"
+thorns/ML_CCZ4_Helper="inactive"
+thorns/ML_CCZ4_Test="inactive"
+thorns/ML_WaveToy="inactive"
+thorns/ML_WaveToy_Test="inactive"
+thorns/ModifiedSchwarzschildBL="inactive"
+thorns/MoL="active"
+thorns/MPI="active"
+thorns/Multipole="inactive"
+thorns/NaNCatcher="inactive"
+thorns/NaNChecker="active"
+thorns/NewRad="active"
+thorns/Nice="inactive"
+thorns/NoExcision="inactive"
+thorns/Noise="inactive"
+thorns/NoMPI="inactive"
+thorns/Norms="inactive"
+thorns/NPScalars="inactive"
+thorns/NPScalars_Proca="inactive"
+thorns/NullConstr="inactive"
+thorns/NullDecomp="inactive"
+thorns/NullEvolve="inactive"
+thorns/NullExact="inactive"
+thorns/NullGrid="inactive"
+thorns/NullInterp="inactive"
+thorns/NullNews="inactive"
+thorns/NullPsiInt="inactive"
+thorns/NullSHRExtract="inactive"
+thorns/NullVars="inactive"
+thorns/OpenSSL="inactive"
+thorns/Outflow="inactive"
+thorns/PAPI="inactive"
+thorns/particle_tracerET="inactive"
+thorns/Periodic="inactive"
+thorns/PeriodicCarpet="inactive"
+thorns/Poisson="inactive"
+thorns/Proca_simpleID="inactive"
+thorns/ProcaBase="inactive"
+thorns/ProcaEvolve="inactive"
+thorns/pthreads="active"
+thorns/PUGH="inactive"
+thorns/PUGHInterp="inactive"
+thorns/PUGHReduce="inactive"
+thorns/PUGHSlab="inactive"
+thorns/PunctureTracker="inactive"
+thorns/QuasiLocalMeasures="inactive"
+thorns/ReadInterpolate="inactive"
+thorns/ReductionTest="inactive"
+thorns/ReductionTest2="inactive"
+thorns/ReductionTest3="inactive"
+thorns/ReflectionSymmetry="active"
+thorns/RegridSyncTest="inactive"
+thorns/RotatingDBHIVP="inactive"
+thorns/RotatingSymmetry180="inactive"
+thorns/RotatingSymmetry90="inactive"
+thorns/SampleBoundary="inactive"
+thorns/SampleIO="inactive"
+thorns/Seed_Magnetic_Fields="inactive"
+thorns/Seed_Magnetic_Fields_BNS="inactive"
+thorns/SetMask_SphericalSurface="inactive"
+thorns/ShiftedGaugeWave="inactive"
+thorns/ShiftedKerrSchild="inactive"
+thorns/Slab="inactive"
+thorns/SlabTest="inactive"
+thorns/smallbPoynET="inactive"
+thorns/Socket="inactive"
+thorns/SpaceMask="active"
+thorns/SphericalHarmonicDecomp="inactive"
+thorns/SphericalHarmonicRecon="inactive"
+thorns/SphericalHarmonicReconGen="inactive"
+thorns/SphericalSurface="active"
+thorns/StaticConformal="active"
+thorns/SummationByParts="inactive"
+thorns/SymBase="active"
+thorns/SystemStatistics="inactive"
+thorns/SystemTopology="inactive"
+thorns/TATelliptic="inactive"
+thorns/TensorTypes="inactive"
+thorns/TerminationTrigger="active"
+thorns/TestArrays="inactive"
+thorns/TestCarpetGridInfo="inactive"
+thorns/TestComplex="inactive"
+thorns/TestCoordinates="inactive"
+thorns/TestFortranCrayPointers="inactive"
+thorns/TestFortranDependencies1="inactive"
+thorns/TestFortranDependencies2="inactive"
+thorns/TestFpointerNULL="inactive"
+thorns/TestFreeF90="inactive"
+thorns/TestGlobalReduce="inactive"
+thorns/TestInclude1="inactive"
+thorns/TestInclude2="inactive"
+thorns/TestLocalInterp2="inactive"
+thorns/TestLocalReduce="inactive"
+thorns/TestLoop="inactive"
+thorns/TestLoopControl="inactive"
+thorns/TestMath="inactive"
+thorns/TestMoL="inactive"
+thorns/TestPar="inactive"
+thorns/TestReadWrite="inactive"
+thorns/TestReduce="inactive"
+thorns/TestSchedule="inactive"
+thorns/TestStrings="inactive"
+thorns/TestTable="inactive"
+thorns/TestTimers="inactive"
+thorns/TestTypes="inactive"
+thorns/TGRtensor="inactive"
+thorns/Time="active"
+thorns/TimerInfo="inactive"
+thorns/TimerReport="inactive"
+thorns/Timers="active"
+thorns/TmunuBase="active"
+thorns/TOVSolver="active"
+thorns/Trigger="inactive"
+thorns/TwoPunctures="inactive"
+thorns/TwoPunctures_KerrProca="inactive"
+thorns/Vaidya2="inactive"
+thorns/Vectors="active"
+thorns/VolumeIntegrals_GRMHD="inactive"
+thorns/VolumeIntegrals_vacuum="inactive"
+thorns/WatchDog="inactive"
+thorns/WaveBinarySource="inactive"
+thorns/WaveExtractL="inactive"
+thorns/WaveMoL="inactive"
+thorns/WaveToy1DF77="inactive"
+thorns/WaveToy2DF77="inactive"
+thorns/WaveToyC="inactive"
+thorns/WaveToyCXX="inactive"
+thorns/WaveToyExtra="inactive"
+thorns/WaveToyF77="inactive"
+thorns/WaveToyF90="inactive"
+thorns/WaveToyFreeF90="inactive"
+thorns/WeylScal4="inactive"
+thorns/zlib="active"
+thorn_arrangements/ADMAnalysis="EinsteinAnalysis"
+thorn_arrangements/ADMBase="EinsteinBase"
+thorn_arrangements/ADMCoupling="EinsteinBase"
+thorn_arrangements/ADMDerivatives="Llama"
+thorn_arrangements/ADMMacros="EinsteinBase"
+thorn_arrangements/ADMMass="EinsteinAnalysis"
+thorn_arrangements/AEILocalInterp="Numerical"
+thorn_arrangements/AHFinder="EinsteinAnalysis"
+thorn_arrangements/AHFinderDirect="EinsteinAnalysis"
+thorn_arrangements/BLAS="ExternalLibraries"
+thorn_arrangements/Baikal="WVUThorns"
+thorn_arrangements/BaikalVacuum="WVUThorns"
+thorn_arrangements/Boundary="CactusBase"
+thorn_arrangements/CT_Analytic="CTThorns"
+thorn_arrangements/CT_MultiLevel="CTThorns"
+thorn_arrangements/CalcK="EinsteinAnalysis"
+thorn_arrangements/Carpet="Carpet"
+thorn_arrangements/CarpetEvolutionMask="Carpet"
+thorn_arrangements/CarpetIOASCII="Carpet"
+thorn_arrangements/CarpetIOBasic="Carpet"
+thorn_arrangements/CarpetIOHDF5="Carpet"
+thorn_arrangements/CarpetIOScalar="Carpet"
+thorn_arrangements/CarpetIntegrateTest="Carpet"
+thorn_arrangements/CarpetInterp="Carpet"
+thorn_arrangements/CarpetInterp2="Carpet"
+thorn_arrangements/CarpetLib="Carpet"
+thorn_arrangements/CarpetMask="Carpet"
+thorn_arrangements/CarpetProlongateTest="Carpet"
+thorn_arrangements/CarpetReduce="Carpet"
+thorn_arrangements/CarpetRegrid="Carpet"
+thorn_arrangements/CarpetRegrid2="Carpet"
+thorn_arrangements/CarpetRegridTest="Carpet"
+thorn_arrangements/CarpetSlab="Carpet"
+thorn_arrangements/CarpetTracker="Carpet"
+thorn_arrangements/CartGrid3D="CactusBase"
+thorn_arrangements/Cartoon2D="CactusNumerical"
+thorn_arrangements/Constants="EinsteinBase"
+thorn_arrangements/Convert_to_HydroBase="WVUThorns"
+thorn_arrangements/CoordBase="CactusBase"
+thorn_arrangements/CoordGauge="EinsteinBase"
+thorn_arrangements/Coordinates="Llama"
+thorn_arrangements/CoordinatesSymmetry="Llama"
+thorn_arrangements/CycleClock="Carpet"
+thorn_arrangements/DemoInterp="CactusExamples"
+thorn_arrangements/Dissipation="CactusNumerical"
+thorn_arrangements/DistortedBHIVP="EinsteinInitialData"
+thorn_arrangements/EHFinder="EinsteinAnalysis"
+thorn_arrangements/EOS_Base="EinsteinBase"
+thorn_arrangements/EOS_Hybrid="EinsteinEOS"
+thorn_arrangements/EOS_IdealFluid="EinsteinEOS"
+thorn_arrangements/EOS_Omni="EinsteinEOS"
+thorn_arrangements/EOS_Polytrope="EinsteinEOS"
+thorn_arrangements/EinsteinExact_Test="EinsteinExact"
+thorn_arrangements/EllBase="CactusElliptic"
+thorn_arrangements/EllSOR="CactusElliptic"
+thorn_arrangements/Exact="EinsteinInitialData"
+thorn_arrangements/Extract="EinsteinAnalysis"
+thorn_arrangements/FFTW3="ExternalLibraries"
+thorn_arrangements/FishboneMoncriefID="WVUThorns"
+thorn_arrangements/FleshInfo="CactusExamples"
+thorn_arrangements/Formaline="CactusUtils"
+thorn_arrangements/Fortran="CactusBase"
+thorn_arrangements/GRHydro="EinsteinEvolve"
+thorn_arrangements/GRHydro_InitData="EinsteinEvolve"
+thorn_arrangements/GSL="ExternalLibraries"
+thorn_arrangements/GaugeWave="EinsteinExact"
+thorn_arrangements/GenericFD="KrancNumericalTools"
+thorn_arrangements/GiRaFFE="WVUThorns"
+thorn_arrangements/GiRaFFE_to_HydroBase="WVUThorns"
+thorn_arrangements/GiRaFFEfood="WVUThorns"
+thorn_arrangements/GlobalDerivative="Llama"
+thorn_arrangements/HDF5="ExternalLibraries"
+thorn_arrangements/HTTPD="CactusConnect"
+thorn_arrangements/HTTPDExtra="CactusConnect"
+thorn_arrangements/HelloWorld="CactusExamples"
+thorn_arrangements/HighOrderWaveTest="Carpet"
+thorn_arrangements/HydroBase="EinsteinBase"
+thorn_arrangements/Hydro_Analysis="EinsteinAnalysis"
+thorn_arrangements/Hydro_InitExcision="EinsteinInitialData"
+thorn_arrangements/Hydro_RNSID="EinsteinInitialData"
+thorn_arrangements/IDAnalyticBH="EinsteinInitialData"
+thorn_arrangements/IDAxiBrillBH="EinsteinInitialData"
+thorn_arrangements/IDAxiOddBrillBH="EinsteinInitialData"
+thorn_arrangements/IDBrillData="EinsteinInitialData"
+thorn_arrangements/IDConstraintViolate="EinsteinInitialData"
+thorn_arrangements/IDFileADM="EinsteinInitialData"
+thorn_arrangements/IDLinearWaves="EinsteinInitialData"
+thorn_arrangements/IDScalarWave="CactusWave"
+thorn_arrangements/IDScalarWaveC="CactusWave"
+thorn_arrangements/IDScalarWaveCXX="CactusWave"
+thorn_arrangements/IDScalarWaveElliptic="CactusWave"
+thorn_arrangements/IDWaveMoL="CactusExamples"
+thorn_arrangements/ID_converter_GiRaFFE="WVUThorns"
+thorn_arrangements/ID_converter_ILGRMHD="WVUThorns"
+thorn_arrangements/IOASCII="CactusBase"
+thorn_arrangements/IOBasic="CactusBase"
+thorn_arrangements/IOHDF5="CactusPUGHIO"
+thorn_arrangements/IOHDF5Util="CactusPUGHIO"
+thorn_arrangements/IOJpeg="CactusIO"
+thorn_arrangements/IOUtil="CactusBase"
+thorn_arrangements/IllinoisGRMHD="WVUThorns"
+thorn_arrangements/InitBase="CactusBase"
+thorn_arrangements/InterpToArray="CactusNumerical"
+thorn_arrangements/Interpolate2="Llama"
+thorn_arrangements/KerrSchild="EinsteinExact"
+thorn_arrangements/LAPACK="ExternalLibraries"
+thorn_arrangements/LORENE="ExternalLibraries"
+thorn_arrangements/LeanBSSNMoL="Lean"
+thorn_arrangements/LlamaWaveToy="Llama"
+thorn_arrangements/LocalInterp="CactusNumerical"
+thorn_arrangements/LocalInterp2="CactusNumerical"
+thorn_arrangements/LocalReduce="CactusNumerical"
+thorn_arrangements/LoopControl="Carpet"
+thorn_arrangements/ML_ADMConstraints="McLachlan"
+thorn_arrangements/ML_ADMQuantities="McLachlan"
+thorn_arrangements/ML_BSSN="McLachlan"
+thorn_arrangements/ML_BSSN_Helper="McLachlan"
+thorn_arrangements/ML_BSSN_Test="McLachlan"
+thorn_arrangements/ML_CCZ4="McLachlan"
+thorn_arrangements/ML_CCZ4_Helper="McLachlan"
+thorn_arrangements/ML_CCZ4_Test="McLachlan"
+thorn_arrangements/ML_WaveToy="McLachlan"
+thorn_arrangements/ML_WaveToy_Test="McLachlan"
+thorn_arrangements/MPI="ExternalLibraries"
+thorn_arrangements/MemSpeed="CactusUtils"
+thorn_arrangements/Meudon_Bin_BH="EinsteinInitialData"
+thorn_arrangements/Meudon_Bin_NS="EinsteinInitialData"
+thorn_arrangements/Meudon_Mag_NS="EinsteinInitialData"
+thorn_arrangements/Minkowski="EinsteinExact"
+thorn_arrangements/MoL="CactusNumerical"
+thorn_arrangements/ModifiedSchwarzschildBL="EinsteinExact"
+thorn_arrangements/Multipole="EinsteinAnalysis"
+thorn_arrangements/NPScalars="Lean"
+thorn_arrangements/NPScalars_Proca="Proca"
+thorn_arrangements/NaNCatcher="CactusUtils"
+thorn_arrangements/NaNChecker="CactusUtils"
+thorn_arrangements/NewRad="EinsteinEvolve"
+thorn_arrangements/Nice="CactusUtils"
+thorn_arrangements/NoExcision="EinsteinInitialData"
+thorn_arrangements/NoMPI="CactusUtils"
+thorn_arrangements/Noise="CactusNumerical"
+thorn_arrangements/Norms="CactusNumerical"
+thorn_arrangements/NullConstr="PITTNullCode"
+thorn_arrangements/NullDecomp="PITTNullCode"
+thorn_arrangements/NullEvolve="PITTNullCode"
+thorn_arrangements/NullExact="PITTNullCode"
+thorn_arrangements/NullGrid="PITTNullCode"
+thorn_arrangements/NullInterp="PITTNullCode"
+thorn_arrangements/NullNews="PITTNullCode"
+thorn_arrangements/NullPsiInt="PITTNullCode"
+thorn_arrangements/NullSHRExtract="PITTNullCode"
+thorn_arrangements/NullVars="PITTNullCode"
+thorn_arrangements/OpenSSL="ExternalLibraries"
+thorn_arrangements/Outflow="EinsteinAnalysis"
+thorn_arrangements/PAPI="ExternalLibraries"
+thorn_arrangements/PUGH="CactusPUGH"
+thorn_arrangements/PUGHInterp="CactusPUGH"
+thorn_arrangements/PUGHReduce="CactusPUGH"
+thorn_arrangements/PUGHSlab="CactusPUGH"
+thorn_arrangements/Periodic="CactusNumerical"
+thorn_arrangements/PeriodicCarpet="Carpet"
+thorn_arrangements/Poisson="CactusExamples"
+thorn_arrangements/ProcaBase="Proca"
+thorn_arrangements/ProcaEvolve="Proca"
+thorn_arrangements/Proca_simpleID="Proca"
+thorn_arrangements/PunctureTracker="EinsteinAnalysis"
+thorn_arrangements/QuasiLocalMeasures="EinsteinAnalysis"
+thorn_arrangements/ReadInterpolate="EinsteinInitialData"
+thorn_arrangements/ReductionTest="Carpet"
+thorn_arrangements/ReductionTest2="Carpet"
+thorn_arrangements/ReductionTest3="Carpet"
+thorn_arrangements/ReflectionSymmetry="CactusNumerical"
+thorn_arrangements/RegridSyncTest="Carpet"
+thorn_arrangements/RotatingDBHIVP="EinsteinInitialData"
+thorn_arrangements/RotatingSymmetry180="CactusNumerical"
+thorn_arrangements/RotatingSymmetry90="CactusNumerical"
+thorn_arrangements/SampleBoundary="CactusExamples"
+thorn_arrangements/SampleIO="CactusExamples"
+thorn_arrangements/Seed_Magnetic_Fields="WVUThorns"
+thorn_arrangements/Seed_Magnetic_Fields_BNS="WVUThorns_Diagnostics"
+thorn_arrangements/SetMask_SphericalSurface="EinsteinUtils"
+thorn_arrangements/ShiftedGaugeWave="EinsteinExact"
+thorn_arrangements/ShiftedKerrSchild="WVUThorns"
+thorn_arrangements/Slab="CactusNumerical"
+thorn_arrangements/SlabTest="CactusNumerical"
+thorn_arrangements/Socket="CactusConnect"
+thorn_arrangements/SpaceMask="CactusNumerical"
+thorn_arrangements/SphericalHarmonicDecomp="PITTNullCode"
+thorn_arrangements/SphericalHarmonicRecon="PITTNullCode"
+thorn_arrangements/SphericalHarmonicReconGen="PITTNullCode"
+thorn_arrangements/SphericalSurface="CactusNumerical"
+thorn_arrangements/StaticConformal="EinsteinBase"
+thorn_arrangements/SummationByParts="CactusNumerical"
+thorn_arrangements/SymBase="CactusBase"
+thorn_arrangements/SystemStatistics="CactusUtils"
+thorn_arrangements/SystemTopology="CactusUtils"
+thorn_arrangements/TATelliptic="CactusElliptic"
+thorn_arrangements/TGRtensor="EinsteinUtils"
+thorn_arrangements/TOVSolver="EinsteinInitialData"
+thorn_arrangements/TensorTypes="CactusNumerical"
+thorn_arrangements/TerminationTrigger="CactusUtils"
+thorn_arrangements/TestArrays="CactusTest"
+thorn_arrangements/TestCarpetGridInfo="Carpet"
+thorn_arrangements/TestComplex="CactusTest"
+thorn_arrangements/TestCoordinates="CactusTest"
+thorn_arrangements/TestFortranCrayPointers="CactusTest"
+thorn_arrangements/TestFortranDependencies1="CactusTest"
+thorn_arrangements/TestFortranDependencies2="CactusTest"
+thorn_arrangements/TestFpointerNULL="CactusTest"
+thorn_arrangements/TestFreeF90="CactusTest"
+thorn_arrangements/TestGlobalReduce="CactusTest"
+thorn_arrangements/TestInclude1="CactusTest"
+thorn_arrangements/TestInclude2="CactusTest"
+thorn_arrangements/TestLocalInterp2="CactusNumerical"
+thorn_arrangements/TestLocalReduce="CactusNumerical"
+thorn_arrangements/TestLoop="CactusTest"
+thorn_arrangements/TestLoopControl="Carpet"
+thorn_arrangements/TestMath="CactusTest"
+thorn_arrangements/TestMoL="CactusTest"
+thorn_arrangements/TestPar="CactusTest"
+thorn_arrangements/TestReadWrite="CactusTest"
+thorn_arrangements/TestReduce="CactusTest"
+thorn_arrangements/TestSchedule="CactusTest"
+thorn_arrangements/TestStrings="CactusTest"
+thorn_arrangements/TestTable="CactusTest"
+thorn_arrangements/TestTimers="CactusTest"
+thorn_arrangements/TestTypes="CactusTest"
+thorn_arrangements/Time="CactusBase"
+thorn_arrangements/TimerInfo="CactusExamples"
+thorn_arrangements/TimerReport="CactusUtils"
+thorn_arrangements/Timers="Carpet"
+thorn_arrangements/TmunuBase="EinsteinBase"
+thorn_arrangements/Trigger="CactusUtils"
+thorn_arrangements/TwoPunctures="EinsteinInitialData"
+thorn_arrangements/TwoPunctures_KerrProca="Proca"
+thorn_arrangements/Vaidya2="EinsteinExact"
+thorn_arrangements/Vectors="CactusUtils"
+thorn_arrangements/VolumeIntegrals_GRMHD="WVUThorns_Diagnostics"
+thorn_arrangements/VolumeIntegrals_vacuum="WVUThorns_Diagnostics"
+thorn_arrangements/WatchDog="CactusUtils"
+thorn_arrangements/WaveBinarySource="CactusWave"
+thorn_arrangements/WaveExtractL="Llama"
+thorn_arrangements/WaveMoL="CactusExamples"
+thorn_arrangements/WaveToy1DF77="CactusExamples"
+thorn_arrangements/WaveToy2DF77="CactusExamples"
+thorn_arrangements/WaveToyC="CactusWave"
+thorn_arrangements/WaveToyCXX="CactusWave"
+thorn_arrangements/WaveToyExtra="CactusWave"
+thorn_arrangements/WaveToyF77="CactusWave"
+thorn_arrangements/WaveToyF90="CactusWave"
+thorn_arrangements/WaveToyFreeF90="CactusWave"
+thorn_arrangements/WeylScal4="EinsteinAnalysis"
+thorn_arrangements/hwloc="ExternalLibraries"
+thorn_arrangements/libjpeg="ExternalLibraries"
+thorn_arrangements/particle_tracerET="WVUThorns_Diagnostics"
+thorn_arrangements/pthreads="ExternalLibraries"
+thorn_arrangements/smallbPoynET="WVUThorns_Diagnostics"
+thorn_arrangements/zlib="ExternalLibraries"
+parameters/ADMBase::dtlapse_evolution_method="ML_BSSN"
+parameters/ADMBase::dtshift_evolution_method="ML_BSSN"
+parameters/ADMBase::evolution_method="ML_BSSN"
+parameters/ADMBase::initial_data="tov"
+parameters/ADMBase::initial_dtlapse="zero"
+parameters/ADMBase::initial_dtshift="zero"
+parameters/ADMBase::initial_lapse="tov"
+parameters/ADMBase::initial_shift="tov"
+parameters/ADMBase::lapse_evolution_method="ML_BSSN"
+parameters/ADMBase::shift_evolution_method="ML_BSSN"
+parameters/ADMMacros::spatial_order=4
+parameters/Cactus::cctk_final_time=400
+parameters/Cactus::terminate="time"
+parameters/Carpet::check_for_poison=no
+parameters/Carpet::domain_from_coordbase=yes
+parameters/Carpet::enable_all_storage=no
+parameters/Carpet::ghost_size=3
+parameters/Carpet::init_3_timelevels=no
+parameters/Carpet::init_fill_timelevels=yes
+parameters/Carpet::max_refinement_levels=10
+parameters/Carpet::poison_new_timelevels=yes
+parameters/Carpet::prolongation_order_space=3
+parameters/Carpet::prolongation_order_time=2
+parameters/Carpet::use_buffer_zones=yes
+parameters/CarpetIOASCII::one_file_per_group=yes
+parameters/CarpetIOASCII::out1D_every=-1
+parameters/CarpetIOASCII::out1D_vars="
+ HydroBase::rho
+ HydroBase::press
+ HydroBase::eps
+ HydroBase::vel
+ ADMBase::lapse
+ ADMBase::metric
+ ADMBase::curv
+ ML_BSSN::ML_Ham
+ ML_BSSN::ML_mom
+"
+parameters/CarpetIOASCII::output_symmetry_points=no
+parameters/CarpetIOBasic::outInfo_every=512
+parameters/CarpetIOBasic::outInfo_vars="Carpet::physical_time_per_hour HydroBase::rho{reductions\='maximum'}"
+parameters/CarpetIOHDF5::out2D_every=2048
+parameters/CarpetIOHDF5::out2D_vars="
+ HydroBase::rho
+ HydroBase::eps
+ HydroBase::vel
+ HydroBase::w_lorentz
+ ADMBase::lapse
+ ADMBase::shift
+ ADMBase::metric
+ ML_BSSN::ML_Ham
+ ML_BSSN::ML_mom
+ "
+parameters/CarpetIOHDF5::output_buffer_points=no
+parameters/CarpetIOScalar::one_file_per_group=yes
+parameters/CarpetIOScalar::outScalar_every=512
+parameters/CarpetIOScalar::outScalar_reductions="norm1 norm2 norm_inf sum maximum minimum"
+parameters/CarpetIOScalar::outScalar_vars="
+ HydroBase::rho{reductions\='maximum'}
+ HydroBase::press{reductions\='maximum'}
+ HydroBase::eps{reductions\='minimum maximum'}
+ HydroBase::vel{reductions\='minimum maximum'}
+ HydroBase::w_lorentz{reductions\='minimum maximum'}
+ ADMBase::lapse{reductions\='minimum maximum'}
+ ADMBase::shift{reductions\='minimum maximum'}
+ ML_BSSN::ML_Ham{reductions\='norm1 norm2 maximum minimum norm_inf'}
+ ML_BSSN::ML_mom{reductions\='norm1 norm2 maximum minimum norm_inf'}
+ GRHydro::dens{reductions\='minimum maximum sum'}
+ Carpet::timing{reductions\='average'}
+"
+parameters/CarpetLib::poison_new_memory=yes
+parameters/CarpetLib::poison_value=114
+parameters/CarpetRegrid2::num_centres=1
+parameters/CarpetRegrid2::num_levels_1=2
+parameters/CarpetRegrid2::radius_1[1]=12
+parameters/CarpetRegrid2::regrid_every=0
+parameters/CartGrid3D::avoid_origin=no
+parameters/CoordBase::boundary_shiftout_x_lower=1
+parameters/CoordBase::boundary_shiftout_x_upper=0
+parameters/CoordBase::boundary_shiftout_y_lower=1
+parameters/CoordBase::boundary_shiftout_y_upper=0
+parameters/CoordBase::boundary_shiftout_z_lower=1
+parameters/CoordBase::boundary_shiftout_z_upper=0
+parameters/CoordBase::boundary_size_x_lower=3
+parameters/CoordBase::boundary_size_x_upper=3
+parameters/CoordBase::boundary_size_y_lower=3
+parameters/CoordBase::boundary_size_y_upper=3
+parameters/CoordBase::boundary_size_z_lower=3
+parameters/CoordBase::boundary_size_z_upper=3
+parameters/CoordBase::dx=1.5
+parameters/CoordBase::dy=1.5
+parameters/CoordBase::dz=1.5
+parameters/CoordBase::xmax=24
+parameters/CoordBase::xmin=0
+parameters/CoordBase::ymax=24
+parameters/CoordBase::ymin=0
+parameters/CoordBase::zmax=24
+parameters/CoordBase::zmin=0
+parameters/Dissipation::epsdis=0.01
+parameters/Dissipation::vars="
+        ML_BSSN::ML_log_confac
+        ML_BSSN::ML_metric
+        ML_BSSN::ML_curv
+        ML_BSSN::ML_trace_curv
+        ML_BSSN::ML_Gamma
+        ML_BSSN::ML_lapse
+        ML_BSSN::ML_shift
+"
+parameters/Dissipation::verbose=no
+parameters/EOS_Omni::gl_gamma=2
+parameters/EOS_Omni::gl_k=100
+parameters/EOS_Omni::poly_gamma=2
+parameters/EOS_Omni::poly_k=90
+parameters/GRHydro::GRHydro_eos_table="2D_Polytrope"
+parameters/GRHydro::GRHydro_eos_type="Polytype"
+parameters/GRHydro::GRHydro_stencil=3
+parameters/GRHydro::bound="none"
+parameters/GRHydro::recon_method="ppm"
+parameters/GRHydro::rho_abs_min=1e-10
+parameters/GRHydro::riemann_solver="Marquina"
+parameters/GRHydro::sources_spatial_order=4
+parameters/HydroBase::evolution_method="GRHydro"
+parameters/HydroBase::hydro_excision=1
+parameters/HydroBase::initial_hydro="tov"
+parameters/HydroBase::timelevels=3
+parameters/IO::out_dir="TOV_90_moreprecise"
+parameters/IO::out_mode="onefile"
+parameters/InitBase::initial_data_setup_method="init_some_levels"
+parameters/ML_BSSN::advectLapse=0
+parameters/ML_BSSN::advectShift=0
+parameters/ML_BSSN::betaDriver=2.66
+parameters/ML_BSSN::evolveA=1
+parameters/ML_BSSN::evolveB=1
+parameters/ML_BSSN::harmonicF=2
+parameters/ML_BSSN::harmonicN=1
+parameters/ML_BSSN::my_initial_boundary_condition="extrapolate-gammas"
+parameters/ML_BSSN::my_rhs_boundary_condition="NewRad"
+parameters/ML_BSSN::shiftGammaCoeff=0.75
+parameters/ML_BSSN::timelevels=3
+parameters/MethodOfLines::MoL_Num_Constrained_Vars=57
+parameters/MethodOfLines::MoL_Num_Evolved_Vars=30
+parameters/MethodOfLines::MoL_Num_SaveAndRestore_Vars=16
+parameters/MethodOfLines::MoL_Num_Scratch_Levels=1
+parameters/MoL::MoL_Intermediate_Steps=4
+parameters/MoL::ODE_Method="rk4"
+parameters/NaNChecker::action_if_found="terminate"
+parameters/NaNChecker::check_every=16384
+parameters/NaNChecker::check_vars="ADMBase::metric ADMBase::lapse ADMBase::shift HydroBase::rho HydroBase::eps HydroBase::press HydroBase::vel"
+parameters/ReflectionSymmetry::avoid_origin_x=no
+parameters/ReflectionSymmetry::avoid_origin_y=no
+parameters/ReflectionSymmetry::avoid_origin_z=no
+parameters/ReflectionSymmetry::reflection_x=yes
+parameters/ReflectionSymmetry::reflection_y=yes
+parameters/ReflectionSymmetry::reflection_z=yes
+parameters/SpaceMask::use_mask=yes
+parameters/TOVSolver::TOV_Gamma=2
+parameters/TOVSolver::TOV_K=100
+parameters/TOVSolver::TOV_Rho_Central[0]=0.00128
+parameters/TerminationTrigger::check_file_every=512
+parameters/TerminationTrigger::create_termination_file=yes
+parameters/TerminationTrigger::max_walltime=24
+parameters/TerminationTrigger::on_remaining_walltime=0
+parameters/TerminationTrigger::termination_file="TerminationTrigger.txt"
+parameters/TerminationTrigger::termination_from_file=yes
+parameters/Time::dtfac=0.25
+parameters/TmunuBase::prolongation_type="none"
+parameters/TmunuBase::stress_energy_at_RHS=yes
+parameters/TmunuBase::stress_energy_storage=yes
+parameters/TmunuBase::timelevels=1
+parameters/grid::domain="full"
+parameters/grid::type="coordbase"
+run_date="Jul 10 2023"
+run_time="15:47:10+0200"
+cctk_iteration=0
+cctk_time=0
+simulation="done"
+run_date="Jul 10 2023"
+run_time="16:10:30+0200"
+cctk_iteration=546304
+cctk_time=400.125
+simulation="done"
